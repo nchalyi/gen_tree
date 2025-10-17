@@ -1,14 +1,21 @@
 # Geneology Tree
 Простое приложение на FastAPI с PostgreSQL для реализации генеологического дерева.
+Также содержит простого бота для Telegram выводящий родословную по имени человека.
 
-Запуск:
+1. Создайте ТГ бота через @BotFather и внесите токен в `docker-compose.yml`:
+```compose
+bot:
+    build: .
+    environment:
+      - BOT_TOKEN=*сюда токен*
+```
+
+2. Запустите всё приложение:
 ```bash
 docker-compose up --build
 ```
 
-ТГ бот: https://t.me/gen_tree_bot
-
-Для заполнения ДБ:
+3. Для тестового заполнения БД можно использовать скрипт:
 ```bash
 source api_fill.sh
 ```
