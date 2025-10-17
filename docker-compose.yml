@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:password@db:5432/genealogy_db
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  db:
+    image: postgres:18
+    environment:
+      - POSTGRES_DB=genealogy_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  bot:
+    build: .
+    environment:
+      - BOT_TOKEN=***
+      - API_URL=http://web:8000/v1/people/name/{name}/ancestors
+    depends_on:
+      - web
+    volumes:
+      - .:/app
+    command: python bot.py
+
+volumes:
+  postgres_data:
